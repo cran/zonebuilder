@@ -1,0 +1,168 @@
+---
+title: "ClockBoard: a multi-purpose zoning system for cities"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An automated geographic zoning system for cities with concentric segmented annuli}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, eval=FALSE}
+refs = RefManageR::ReadZotero(group = "418217", .params = list(collection = "8S8LR8TK", limit = 100))
+RefManageR::WriteBib(refs, "vignettes/references.bib")
+```
+
+```{r, eval=FALSE, echo=FALSE}
+# generate bibliography
+
+citr::tidy_bib_file(rmd_file = "vignettes/paper.Rmd", messy_bibliography = "~/uaf/allrefs.bib", file = "vignettes/references.bib")
+```
+
+
+
+```{r setup}
+library(zonebuilder)
+```
+
+
+<!-- # notes and brainstorm -->
+
+<!-- Target journals -->
+<!-- - JOSIS: http://www.josis.org/index.php/josis -->
+
+<!-- Title alternatives: -->
+
+<!-- * Standard zoning system for cities -->
+<!-- * ClockBoard: a standard zoning system for cities -->
+<!-- * ClockBoard: a multi-purpose zoning system for cities -->
+<!-- - An automated geographic zoning system for cities with concentric segmented annuli -->
+
+<!-- I agree with all of these, we could either define things as we go along or start with a definitions section -->
+<!-- Terminology; we need consistent terms for these things (in bold the suggestions): -->
+
+<!-- * Our zoning system. **ClockBoard** -->
+<!-- The name given to ways of dividing up geographical space: zoning system -->
+<!-- * The individual zones. **zones** or **areal units** -->
+<!-- * (optionally) The whole system, so not only the default. **zonebuilder** -->
+<!-- * The rings. **rings/circles/annuli** -->
+<!-- * The segments. **segments** -->
+<!-- * Bulls eye. **central zone/center/centre** -->
+<!-- * Distance (to the centre). **distance** -->
+<!-- * Clock hand. **direction/angle/cardinal direction/...** -->
+
+
+# Introduction
+
+
+Zoning systems have long been a topic of geographic research and political controversy.
+For even longer they have been used in a variety of applications, ranging from ... to 'tithe maps' depicting the land ownership and use in 19^th^ Century England [@bryant_worcestershire_2007]
+
+
+From a research perspective, the way in which 
+
+@openshaw_optimal_1977
+
+
+### Current situation
+
+
+Statistics, policy making and transport planning are often based on administrative regions. However, there are a couple of downsides to using administrative regions. First of all, since a city and its politics change over time, the administrative regions often change accordingly. This make it harder to do time series analysis. Since the administrative regions have heterogeneous characteristics, for instance population size, area size, proximity to the city centre, comparing different administrative regions within a city is not straightforward. Moreover, comparing administrative regions across cities is even more challenging since average scale of an administrative region may vary a lot across cities.
+
+Grid tiles are popular in spatial statistics for a number of reasons. Most importantly the tiles have a constant area size, which makes comparibily possible. Moreover, the grid tiles will not change over time like administrative regions. However, one downside is that a grid requires a coordinate reference system (CRS), enforcing (approximately) equal area size. For continents or large countries, a CRS is always a compromis. Therefore, the areas of the tiles may vary, or the shape of the tiles may be sheared or warped.
+
+Another downside from a statistical point of view is that population densities are not uniform within a urban area, but concentrated around a centre. As a consequence, high resolution statistics is preferable in the dense areas, i.e. the centre, and lower resolution statitics in other parts of the city. That is the reason why administrative regions are often smaller in dense areas.
+
+
+### Why is it needed/handy?
+
+* Locating cities. By having a ClockBoard zoning system for a city, it is immediate clear where the city centre is, and what the scale of the city is. 
+* Reference system of everyday live. The zone name contains information about the distance to the center as well as the cardinal direction. E.g "I live in C12 and work in B3." or "The train station is in the center and our hotel is in B7". Moreover, the zones indicate whether walking and cycling is a feasibly option regarding the distance.   
+* Aggregation for descriptive statistics / comparability over cities. By using the zoning system to aggregate statistics (e.g. on population density, air quality, bicycle use, number of dwellings), cities can easily be compared to each other.
+* Modelling urban cities. The zoning system can be used to model urban mobility.
+
+
+### Arguments / discussion
+
+Pros:
+
+* Most cities have a radial plan around a central area, which is often a historic centre or a central business area.
+Typically, this centre is not only the geographic centre, but also the busiest area in terms of daytime population. Often the main nodes in the urban transport network are also located in or near the city centre. Note that many cities already consist of concentric rings, separated by a ring road. (See also https://en.wikipedia.org/wiki/City_centre which describes the centre as the heart of the city)
+
+Cons:
+
+* Some cities have two or more centres. Many cities have a central business discrict or financial discrict which not always coinsides with the historic city centre.
+* In urban areas with nearby cities, it may not always be clear where one cities ends and another begins. Also, small cities may be located within the metropolitan area of a larger city (e.g. the Dutch cities The Hague/Delft) 
+
+
+
+
+
+
+# Method
+
+The 
+
+
+## Annuli distances
+
+The radius of each annuli in the zoning system can be incremented by a fixed amount, as shown in previous figures.
+<!-- Todo: add figures -->
+In cases where high geographic resolution is important near the centre of the study region, such as when designing transport systems into the central zone of a city planning, increasing distances between each radius may be desirable.
+We experimented with various ways of incrementing the annuli width and suggest linear increases in width as a sensible default for a simple zoning system.
+This linear growth leads to distances between each annuli boundary increasing in line with the steps in the [triangular number sequence](https://en.wikipedia.org/wiki/Triangular_number).
+
+## Number of segments
+
+## City extents
+
+# Applications
+
+## Inter-city statistical comparison
+
+<!-- Comparing two cities can be difficult due to incomparable zoning systems. -->
+<!-- Take the example of city A is provided in a detailed zoning system composed of hundreds of small, irregular areas while city B is composed only of 9 irregular zones -->
+
+
+<!-- TODO: reference to https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0050606 -->
+
+```{r, fig.width=7, message=FALSE, warning=FALSE}
+library(dplyr)
+library(tmap)
+
+# download preprocessed data (processing script /data-raw/crashes.R)
+df = readRDS(gzcon(url("https://github.com/zonebuilders/zonebuilder/releases/download/0.0.1/ksi_bkm_zone.rds")))
+uk = readRDS(gzcon(url("https://github.com/zonebuilders/zonebuilder/releases/download/0.0.1/uk.rds")))
+thames = readRDS(gzcon(url("https://github.com/zonebuilders/zonebuilder/releases/download/0.0.1/thames.rds")))
+
+# filter: set zones with less than 10,000 km of cycling per yer to NA
+df_filtered = df %>% 
+  mutate(ksi_bkm = ifelse((bkm_yr * 1e09) < 2e04, NA, ksi_bkm))
+
+tmap_mode("plot")
+tm_shape(uk) +
+ tm_fill(col = "white") +
+tm_shape(df_filtered, is.master = TRUE) +
+  tm_polygons("ksi_bkm", breaks = c(0, 1000, 2500, 5000, 7500, 12500), textNA = "Too little cycling", title = "Killed and seriously injured cyclists\nper billion cycled kilometers") +
+  tm_facets(by = "city", ncol=4) +
+  tm_shape(uk) +
+  tm_borders(lwd = 1, col = "black", lty = 3) +
+  tm_shape(thames) +
+  tm_lines(lwd = 1, col = "black", lty = 3) +
+  tm_layout(bg.color = "lightblue")
+```{r}
+
+## Transport planning
+
+## Navigation and informal use
+
+# References
+
