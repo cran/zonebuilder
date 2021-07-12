@@ -5,11 +5,12 @@
 #'
 #' @note `london_a()`  returns a projected version of `lnd` in `spDataLarge`.
 #' See the `data-raw` folder in the package's repo to reproduce these datasets
+#' The `lonlat` versions of the data have coordinates in units of degrees.
 #'
 #' @docType data
 #' @keywords datasets
 #' @name london_area
-#' @aliases london_cent london_c london_a
+#' @aliases london_cent london_c london_a london_cent_lonlat london_area_lonlat
 #' @export
 #' @examples 
 #' plot(london_a(), reset = FALSE)
